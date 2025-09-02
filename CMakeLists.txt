@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(task_tracker_cli main.cpp
         Task.cpp
-        Task.h)
+        Task.h
+        Utils.cpp
+        Utils.h)
