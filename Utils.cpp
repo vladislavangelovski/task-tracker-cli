@@ -1,15 +1,27 @@
 #include "Utils.h"
 
 #include <algorithm>
+#include <cctype>
+#include <stdexcept>
+#include <iostream>
 
 
-void transformToLower(std::string& string) {
+int findIndexById(const std::vector<Task> &tasks, const Task::Id id) {
+    for (std::size_t i = 0; i < tasks.size(); ++i) {
+        if (tasks[i].get_id() == id) {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
+}
+
+void transformToLower(std::string& str) {
     std::transform(
-        string.begin(),
-        string.end(),
-        string.begin(),
+        str.begin(),
+        str.end(),
+        str.begin(),
         [](unsigned char c) {
-            return std::tolower(c);
+            return static_cast<char>(std::tolower(c));
         }
         );
 }
@@ -20,67 +32,71 @@ Task createTask(const std::string& description) {
 
 
 Task& updateTask(std::vector<Task> &tasks, const Task::Id id, const std::string& description) {
-    Task& t = tasks.at(id);
+    const int idx = findIndexById(tasks, id);
+
+    if (idx < 0) {
+        throw std::out_of_range("No task with ID " + std::to_string(id));
+    }
+
+    Task& t = tasks[static_cast<std::size_t>(idx)];
     t.set_description(description);
     return t;
 }
 
-Task & markInProgress(std::vector<Task> &tasks, Task::Id id, Status status) {
-    Task& t = tasks.at(id);
+Task & markInProgress(std::vector<Task> &tasks, const Task::Id id) {
+    const int idx = findIndexById(tasks, id);
+
+    if (idx < 0) {
+        throw std::out_of_range("No task with ID " + std::to_string(id));
+    }
+
+    Task& t = tasks[static_cast<std::size_t>(idx)];
     t.set_status(Status::in_progress);
     return t;
 }
 
-Task & markDone(std::vector<Task> &tasks, Task::Id id, Status status) {
-    Task& t = tasks.at(id);
+Task & markDone(std::vector<Task> &tasks, const Task::Id id) {
+    const int idx = findIndexById(tasks, id);
+
+    if (idx < 0) {
+        throw std::out_of_range("No task with ID " + std::to_string(id));
+    }
+
+    Task& t = tasks[static_cast<std::size_t>(idx)];
     t.set_status(Status::done);
     return t;
 }
 
-void deleteTaskById(std::vector<Task>& tasks, Task::Id id) {
-    tasks.erase(tasks.begin() + id - 1);
-}
+void deleteTaskById(std::vector<Task>& tasks, const Task::Id id) {
+    const int idx = findIndexById(tasks, id);
 
-void listAllToDo(const std::vector<Task>& tasks, Status status) {
-    for (const Task& t : tasks) {
-        if (statusToString(t.get_status()) == "todo") {
-            std::cout << t;
-            std::cout << '\n';
-        }
+    if (idx < 0) {
+        throw std::out_of_range("No task with ID " + std::to_string(id));
     }
+
+    tasks.erase(tasks.begin() + static_cast<std::size_t>(idx));
 }
 
-void listAllInProgress(const std::vector<Task>& tasks, Status status) {
-    std::vector<Task> inProgress;
+void listAllToDo(const std::vector<Task> &tasks) {
     for (const Task& t : tasks) {
-        if (statusToString(t.get_status()) == "in_progress") {
+        if (t.get_status() == Status::todo) {
             std::cout << t;
         }
     }
 }
 
-void listAllDone(const std::vector<Task>& tasks, Status status) {
-    std::vector<Task> done;
+void listAllInProgress(const std::vector<Task> &tasks) {
     for (const Task& t : tasks) {
-        if (statusToString(t.get_status()) == "done") {
+        if (t.get_status() == Status::in_progress) {
             std::cout << t;
-            std::cout << std::endl;
         }
     }
 }
 
-std::string statusToString(Status status) {
-    switch (status) {
-        case Status::todo:
-            return "todo";
-
-        case Status::in_progress:
-            return "in_progress";
-
-        case Status::done:
-            return "done";
-
-        default:
-            return "unknown";
+void listAllDone(const std::vector<Task> &tasks) {
+    for (const Task& t : tasks) {
+        if (t.get_status() == Status::done) {
+            std::cout << t;
+        }
     }
 }

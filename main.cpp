@@ -31,13 +31,13 @@ int main() {
     std::cin >> status;
 
     if (status == "todo") {
-        listAllToDo(tasks, Status::todo);
+        listAllToDo(tasks);
     }
     else if (status == "in progress") {
-        listAllInProgress(tasks, Status::in_progress);
+        listAllInProgress(tasks);
     }
     else if (status == "done") {
-        listAllDone(tasks, Status::done);
+        listAllDone(tasks);
     }
 
     return 0;
