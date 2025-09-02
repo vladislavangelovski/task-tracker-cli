@@ -4,75 +4,7 @@
 #include <iomanip>
 #include <vector>
 
-enum Status {
-    todo,
-    in_progress,
-    done
-};
-
-class Task {
-public:
-    using Id = std::size_t;
-private:
-    inline static std::size_t nextId = 1;
-    Id id;
-    std::string description;
-    Status status;
-    time_t createdAt;
-    time_t updatedAt;
-
-public:
-    Task(const std::string &description)
-        : id(nextId++),
-        description(description),
-        status(Status::todo),
-        createdAt(std::time(nullptr)),
-        updatedAt(createdAt){
-    }
-
-    [[nodiscard]] Id get_id() const {
-        return id;
-    }
-
-    Task(const Task &other) = default;
-
-    Task(Task &&other) noexcept = default;
-
-    Task & operator=(const Task &other) = default;
-
-    Task & operator=(Task &&other) noexcept = default;
-
-    static std::string statusToString(Status status) {
-        switch (status) {
-            case Status::todo:
-                return "todo";
-            case Status::in_progress:
-                return "in_progress";
-            case Status::done:
-                return "done";
-            default:
-                return "unknown";
-        }
-    }
-
-    friend std::ostream & operator<<(std::ostream &os, const Task &task) {
-        return os << "Task ID: " << task.id << '\n'
-        << "Description: " << task.description << '\n'
-        << "Status: " << statusToString(task.status) << '\n'
-        << "Created At: " << std::put_time(std::localtime(&task.createdAt), "%c") << "\n"
-        << "Updated At: " << std::put_time(std::localtime(&task.updatedAt), "%c");
-    }
-
-    void set_description(const std::string &description) {
-        this->description = description;
-        updatedAt = std::time(nullptr);
-    }
-
-    void set_status(Status status) {
-        this->status = status;
-        updatedAt = std::time(nullptr);
-    }
-};
+#include "Task.h"
 
 void transformToLower(std::string& string);
 Task createTask(std::string description);
