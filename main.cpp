@@ -1,6 +1,8 @@
+#include <algorithm>
 #include <iostream>
 #include <ctime>
 #include <iomanip>
+#include <vector>
 
 enum Status {
     todo,
@@ -25,7 +27,7 @@ public:
         description(description),
         status(Status::todo),
         createdAt(std::time(nullptr)),
-        updatedAt(std::time(nullptr)){
+        updatedAt(createdAt){
     }
 
     [[nodiscard]] Id get_id() const {
@@ -42,11 +44,11 @@ public:
 
     static std::string statusToString(Status status) {
         switch (status) {
-            case todo:
+            case Status::todo:
                 return "todo";
-            case in_progress:
+            case Status::in_progress:
                 return "in_progress";
-            case done:
+            case Status::done:
                 return "done";
             default:
                 return "unknown";
@@ -60,15 +62,49 @@ public:
         << "Created At: " << std::put_time(std::localtime(&task.createdAt), "%c") << "\n"
         << "Updated At: " << std::put_time(std::localtime(&task.updatedAt), "%c");
     }
+
+    Task& updateTask(std::string d, Status s) {
+        description = d;
+        status = s;
+        updatedAt = std::time(nullptr);
+        return *this;
+    }
+
+    Task& updateTask(std::string d) {
+        description = d;
+        updatedAt = std::time(nullptr);
+        return *this;
+    }
 };
 
+void transformToLower(std::string& string);
 
 int main() {
     std::string description;
+    std::string choice;
     std::cout << "Welcome to the Task Tracker Application\n";
     std::cout << "Please enter a task description:"<< std::endl;
     std::getline(std::cin, description);
     Task task = Task(description);
+    std::cout << "Would you like to update this task?" << std::endl;
+    getline(std::cin, choice);
+    transformToLower(choice);
+    if (choice == "yes") {
+        std::cout << "Please enter a task description:"<< std::endl;
+        getline(std::cin, description);
+        task.updateTask(description);
+    }
     std::cout << task;
     return 0;
+}
+
+void transformToLower(std::string& string) {
+    std::transform(
+        string.begin(),
+        string.end(),
+        string.begin(),
+        [](unsigned char c) {
+            return std::tolower(c);
+        }
+        );
 }
