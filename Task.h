@@ -23,7 +23,7 @@ private:
     time_t createdAt;
     time_t updatedAt;
 public:
-    Task(const std::string &description);
+    explicit Task(const std::string &description);
 
     Task(const Task &other) = default;
 
@@ -42,6 +42,8 @@ public:
     void set_status(Status status);
 
     [[nodiscard]] Id get_id() const;
+
+    [[nodiscard]] Status get_status() const;
 };
 
 

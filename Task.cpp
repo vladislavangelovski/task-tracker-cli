@@ -21,6 +21,10 @@ void Task::set_status(Status s) {
     updatedAt = std::time(nullptr);
 }
 
+Status Task::get_status() const {
+    return status;
+}
+
 std::string Task::statusToString(Status status) {
     switch (status) {
         case Status::todo:
@@ -39,5 +43,5 @@ std::ostream & operator<<(std::ostream &os, const Task &task) {
     << "Description: " << task.description << '\n'
     << "Status: " << Task::statusToString(task.status) << '\n'
     << "Created At: " << std::put_time(std::localtime(&task.createdAt), "%c") << "\n"
-    << "Updated At: " << std::put_time(std::localtime(&task.updatedAt), "%c");
+    << "Updated At: " << std::put_time(std::localtime(&task.updatedAt), "%c") << std::endl;
 }

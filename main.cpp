@@ -10,7 +10,8 @@ int main() {
     std::string description;
     std::string choice;
     std::vector<Task> tasks;
-    size_t id;
+    Task::Id id;
+    std::string status;
 
     std::cout << "Welcome to the Task Tracker Application\n";
     std::cout << "Please enter a task description:"<< std::endl;
@@ -25,13 +26,20 @@ int main() {
     std::getline(std::cin, description);
     tasks.push_back(createTask(description));
 
-    std::cout << "Enter id of task to delete";
-    std::cin >> id;
-    deleteTaskById(tasks, id);
 
-    for (size_t i = 0; i < tasks.size(); ++i) {
-        std::cout << tasks[i] << '\n';
+    std::cout << "List tasks by user input: " << std::endl;
+    std::cin >> status;
+
+    if (status == "todo") {
+        listAllToDo(tasks, Status::todo);
     }
+    else if (status == "in progress") {
+        listAllInProgress(tasks, Status::in_progress);
+    }
+    else if (status == "done") {
+        listAllDone(tasks, Status::done);
+    }
+
     return 0;
 }
 
