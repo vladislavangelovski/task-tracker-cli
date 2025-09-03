@@ -100,3 +100,20 @@ void listAllDone(const std::vector<Task> &tasks) {
         }
     }
 }
+
+void listAll(const std::vector<Task>& tasks) {
+    for (const Task& t : tasks) {
+        std::cout << t ;
+    }
+}
+
+std::string joinArgs(char **argv, int start, int argc) {
+    std::string out;
+    for (int i = start; i < argc; ++i) {
+        if (i > start) {
+            out += ' ';
+        }
+        out += argv[i];
+    }
+    return out;
+}

@@ -6,40 +6,33 @@
 #include "Utils.h"
 
 
-int main() {
-    std::string description;
-    std::string choice;
+int main(int argc, char** argv) {
     std::vector<Task> tasks;
-    Task::Id id;
-    std::string status;
 
-    std::cout << "Welcome to the Task Tracker Application\n";
-    std::cout << "Please enter a task description:"<< std::endl;
-    std::getline(std::cin, description);
-    tasks.push_back(createTask(description));
-
-    std::cout << "Please enter a task description:"<< std::endl;
-    std::getline(std::cin, description);
-    tasks.push_back(createTask(description));
-
-    std::cout << "Please enter a task description:"<< std::endl;
-    std::getline(std::cin, description);
-    tasks.push_back(createTask(description));
-
-
-    std::cout << "List tasks by user input: " << std::endl;
-    std::cin >> status;
-
-    if (status == "todo") {
-        listAllToDo(tasks);
-    }
-    else if (status == "in progress") {
-        listAllInProgress(tasks);
-    }
-    else if (status == "done") {
-        listAllDone(tasks);
+    if (argc < 2) {
+        std::cout << "Usage: task <command> [args]\n" "Commands: add <desc> | list [all]\n";
+        return 0;
     }
 
-    return 0;
+    std::string cmd = argv[1];
+
+    if (cmd == "add") {
+        if (argc < 3) {
+            std::cout << "Usage: task add <description>\n";
+            return 1;
+        }
+        std::string desc = joinArgs(argv, 2, argc);
+        Task t = createTask(desc);
+        tasks.push_back(t);
+        std::cout << "Added task with ID " << t.get_id() << '\n';
+        return 0;
+    }
+    if (cmd == "list") {
+        listAll(tasks);
+        return 0;
+    }
+
+    std::cout << "Unknown command: " << cmd << '\n';
+    return 1;
 }
 
